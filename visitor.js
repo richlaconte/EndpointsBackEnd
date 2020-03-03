@@ -70,7 +70,7 @@ router.post('/', (req, res) => {
 })
 
 // GET - Return Visitor Endpoints
-router.get('/:', (req, res) => {
+router.get('/:id', (req, res) => {
     if (req.params.id) {
         let id = req.params.id;
 
