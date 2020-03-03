@@ -70,9 +70,9 @@ router.post('/', (req, res) => {
 })
 
 // GET - Return Visitor Endpoints
-router.get('/', (req, res) => {
-    if (req.body.id) {
-        let id = req.body.id;
+router.get('/:', (req, res) => {
+    if (req.params.id) {
+        let id = req.params.id;
 
         client.connect(function (err) {
             assert.equal(null, err);
