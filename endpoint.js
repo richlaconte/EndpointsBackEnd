@@ -60,4 +60,40 @@ router.post('/', (req, res) => {
     })
 })
 
+router.post('/update', (req, res) => {
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected to the server");
+
+        const db = client.db(dbName);
+        const visitors = db.collection("Visitors");
+
+        if (req.body.account) {
+            res.send(`Adding endpoints to Accounts hasn't been implemented yet.`)
+        } else if (req.body.id) {
+            try {
+                visitors.updateOne(
+                    {
+                        id: req.body.id,
+                        'endpoints.url': req.body.url
+                    },
+                    {
+                        $set: {
+                            'endpoints.$.content': req.body.content
+                        }
+                    }
+
+                )
+                res.send(`Updated endpoint ${req.params.url}`)
+            } catch (err) {
+                console.log(err.message);
+                res.send(err.message);
+            }
+        } else {
+            res.status(409);
+            res.send(`No ID or Account specified.`);
+        }
+    })
+})
+
 module.exports = router;
