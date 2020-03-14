@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const app = express();
 const visitor = require('./visitor');
 const endpoint = require('./endpoint');
+const consume = require('./consume');
 
 // Dotenv Config
 dotenv.config({
@@ -18,7 +19,7 @@ app.use(express.json());
 //app.use('/account', account);
 app.use('/visitor', visitor);
 app.use('/endpoint', endpoint);
-//app.use('/consume', consume);
+app.use('/consume', consume);
 
 // Connection URL
 const url = process.env.DB;
