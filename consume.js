@@ -23,6 +23,109 @@ router.use((req, res, next) => {
     next();
 })
 
+let makeGet = (object) => {
+    console.log("getting");
+    console.log("object", object);
+    axios.get(object.url)
+        .then(function (response) {
+            //console.log(response);
+            if (response.status === 200) {
+                // console.log(response.data);
+                return true;
+            } else {
+                console.log(response);
+                return false;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            return false;
+        });
+}
+
+let makePost = (object) => {
+    console.log("posting");
+    console.log("object", object);
+    axios.post(object.url, object.body)
+        .then(function (response) {
+            //console.log(response);
+            if (response.status === 200) {
+                // console.log(response.data);
+                return true;
+            } else {
+                console.log(response);
+                return false;
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+            return false;
+        });
+}
+
+router.get('/:url', (req, res) => {
+    console.log("test");
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected to the server");
+
+        // object.body should be an object like this:
+        //{
+        //  "item": "value",
+        //  "item": "value"
+        //}
+
+        let theFunction = "let req = " + JSON.stringify(req.query) + ";";
+
+        const db = client.db(dbName);
+        const endpoints = db.collection("Visitors");
+
+        endpoints.find({ 'endpoints.url': req.params.url }).toArray((err, docs) => {
+            console.log(docs);
+            if (docs.length > 0) {
+                let doc = docs[0];
+                let endpoint;
+
+                for (let i = 0; i < doc.endpoints.length; i++) {
+                    if (doc.endpoints[i].url === req.params.url) {
+                        endpoint = doc.endpoints[i];
+                    }
+                }
+
+                let test = endpoint.content;
+                console.log(test);
+                theFunction += "" + test;
+                console.log(theFunction);
+                let object;
+
+                try {
+                    object = eval(theFunction);
+                } catch (err) {
+                    console.log(err);
+                }
+
+                if (object.method === "POST") {
+                    try {
+                        makePost(object);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                } else if (object.method === "GET") {
+                    try {
+                        makeGet(object);
+                    } catch (err) {
+                        console.log(err);
+                    }
+                }
+
+            } else {
+                res.send("No endpoints found with that url");
+            }
+        })
+        res.send("done");
+    })
+})
+
 router.post('/:url', (req, res) => {
     console.log("test");
     client.connect((err) => {
@@ -45,11 +148,13 @@ router.post('/:url', (req, res) => {
             if (docs.length > 0) {
                 let doc = docs[0];
                 let endpoint;
+
                 for (let i = 0; i < doc.endpoints.length; i++) {
                     if (doc.endpoints[i].url === req.params.url) {
                         endpoint = doc.endpoints[i];
                     }
                 }
+
                 let test = endpoint.content;
                 console.log(test);
                 theFunction += "" + test;
@@ -64,50 +169,17 @@ router.post('/:url', (req, res) => {
 
                 if (object.method === "POST") {
                     try {
-                        console.log("posting");
-                        console.log("object", object);
-                        axios.post(object.url, object.body)
-                            .then(function (response) {
-                                //console.log(response);
-                                if (response.status === 200) {
-                                    // console.log(response.data);
-                                    return true;
-                                } else {
-                                    console.log(response);
-                                    return false;
-                                }
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                                return false;
-                            });
+                        makePost(object);
                     } catch (err) {
                         console.log(err);
                     }
                 } else if (object.method === "GET") {
                     try {
-                        console.log("getting");
-                        console.log("object", object);
-                        axios.get(object.url)
-                            .then(function (response) {
-                                //console.log(response);
-                                if (response.status === 200) {
-                                    // console.log(response.data);
-                                    return true;
-                                } else {
-                                    console.log(response);
-                                    return false;
-                                }
-                            })
-                            .catch(function (error) {
-                                console.log(error);
-                                return false;
-                            });
+                        makeGet(object);
                     } catch (err) {
                         console.log(err);
                     }
                 }
-
 
             } else {
                 res.send("No endpoints found with that url");
