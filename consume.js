@@ -26,7 +26,8 @@ router.use((req, res, next) => {
 let makeGet = (object) => {
     console.log("getting");
     console.log("object", object);
-    axios.get(object.url)
+
+    axios.get(object.url, { params: object.body })
         .then(function (response) {
             //console.log(response);
             if (response.status === 200) {
