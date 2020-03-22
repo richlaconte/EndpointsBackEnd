@@ -97,7 +97,7 @@ router.post('/update', (req, res) => {
 })
 
 // Delete endpoint
-router.delete('/', (req, res) => {
+router.post('/delete', (req, res) => {
     client.connect((err) => {
         assert.equal(null, err);
         console.log("Connected to the server");
