@@ -87,7 +87,7 @@ router.get('/:id', (req, res) => {
                     if (docs.length > 0) {
                         return res.send(docs[0].endpoints);
                     } else {
-                        res.status(509);
+                        res.status(204);
                         return res.send(`Could not find Visitor with ID ${id}`);
                     }
                 })
@@ -100,7 +100,7 @@ router.get('/:id', (req, res) => {
 
     }
     else {
-        res.status(509);
+        res.status(204);
         res.send(`Missing ID.`);
     }
 })
