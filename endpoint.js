@@ -96,4 +96,33 @@ router.post('/update', (req, res) => {
     })
 })
 
+// Delete endpoint
+router.delete('/', (req, res) => {
+    client.connect((err) => {
+        assert.equal(null, err);
+        console.log("Connected to the server");
+
+        const db = client.db(dbName);
+        const visitors = db.collection("Visitors");
+
+        if (req.body.account) {
+            res.send(`Removing endpoints from Accounts hasn't been implemented yet.`)
+        } else if (req.body.id) {
+            try {
+                visitors.updateOne(
+                    { "id": req.body.id },
+                    { $pull: { endpoints: { url: req.body.url } } }
+                )
+                res.send(`Deleted endpoint ${req.body.url}`)
+            } catch (err) {
+                console.log(err.message);
+                res.send(err.message);
+            }
+        } else {
+            res.status(409);
+            res.send(`No ID or Account specified.`);
+        }
+    })
+})
+
 module.exports = router;
