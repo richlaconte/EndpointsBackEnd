@@ -46,7 +46,7 @@ router.post('/', (req, res) => {
                 collection.find({ id }).toArray(function (err, docs) {
                     // Check if ID already exists
                     if (docs.length > 0) {
-                        res.status(409);
+                        res.status(509);
                         return res.send(`Visitor with this ID already exists.`);
                     } else {
                         collection.insertOne(newVisitor)
@@ -64,7 +64,7 @@ router.post('/', (req, res) => {
 
     }
     else {
-        res.status(409);
+        res.status(509);
         res.send(`Missing ID.`);
     }
 })
@@ -87,7 +87,7 @@ router.get('/:id', (req, res) => {
                     if (docs.length > 0) {
                         return res.send(docs[0].endpoints);
                     } else {
-                        res.status(409);
+                        res.status(509);
                         return res.send(`Could not find Visitor with ID ${id}`);
                     }
                 })
@@ -100,7 +100,7 @@ router.get('/:id', (req, res) => {
 
     }
     else {
-        res.status(409);
+        res.status(509);
         res.send(`Missing ID.`);
     }
 })
